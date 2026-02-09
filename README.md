@@ -30,116 +30,10 @@ A modern college learning and coding platform built with React, Vite, and Supaba
   - Department assignment
   - Year tracking
 
-## 🚀 Quick Start
 
-### Prerequisites
-
-- Node.js 18+ installed
-- Supabase account
-- Git
-
-### Installation
-
-1. **Clone/Extract the project**
-   ```bash
-   cd learnwithcresvia
    ```
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
 
-3. **Set up environment variables**
-   
-   Create a `.env` file in the root directory:
-   ```bash
-   cp .env.example .env
-   ```
-   
-   Edit `.env` and add your Supabase credentials:
-   ```
-   VITE_SUPABASE_URL=your_supabase_url_here
-   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key_here
-   ```
-
-4. **Set up Supabase database**
-   
-   Run these SQL commands in your Supabase SQL Editor:
-
-   ```sql
-   -- Create profiles table
-   CREATE TABLE public.profiles (
-     id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
-     email TEXT NOT NULL,
-     name TEXT,
-     role TEXT NOT NULL DEFAULT 'STUDENT',
-     department TEXT,
-     year INTEGER,
-     xp INTEGER DEFAULT 0,
-     streak INTEGER DEFAULT 0,
-     last_active TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-     
-     CONSTRAINT valid_role CHECK (role IN ('STUDENT', 'STAFF', 'COORDINATOR', 'HOD', 'ADMIN'))
-   );
-
-   -- Enable RLS
-   ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
-
-   -- Create policies
-   CREATE POLICY "Enable insert for authentication"
-   ON public.profiles FOR INSERT
-   WITH CHECK (true);
-
-   CREATE POLICY "Enable read access for all users"
-   ON public.profiles FOR SELECT
-   USING (true);
-
-   CREATE POLICY "Enable update for users based on id"
-   ON public.profiles FOR UPDATE
-   USING (auth.uid() = id);
-
-   -- Create trigger function
-   CREATE OR REPLACE FUNCTION public.handle_new_user()
-   RETURNS TRIGGER 
-   SECURITY DEFINER
-   SET search_path = public
-   LANGUAGE plpgsql
-   AS $$
-   BEGIN
-     INSERT INTO public.profiles (id, email, role)
-     VALUES (NEW.id, NEW.email, 'STUDENT');
-     RETURN NEW;
-   EXCEPTION WHEN OTHERS THEN
-     RAISE LOG 'Error creating profile: %', SQLERRM;
-     RAISE;
-   END;
-   $$;
-
-   -- Create trigger
-   DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
-   CREATE TRIGGER on_auth_user_created
-     AFTER INSERT ON auth.users
-     FOR EACH ROW
-     EXECUTE FUNCTION public.handle_new_user();
-   ```
-
-5. **Configure Supabase Auth (Optional)**
-   
-   In Supabase Dashboard → Authentication → Settings:
-   - Disable email confirmation for testing (can re-enable later)
-   - Set redirect URL: `http://localhost:3000/auth/callback`
-
-6. **Start development server**
-   ```bash
-   npm run dev
-   ```
-
-7. **Open your browser**
-   ```
-   http://localhost:3000
-   ```
 
 ## 📁 Project Structure
 
@@ -201,32 +95,6 @@ learnwithcresvia/
 - `/signup` - Signup page
 - `/test-auth` - Testing page (remove in production)
 
-## 🔧 Configuration
-
-### Tech Stack
-
-- **Frontend**: React 18
-- **Build Tool**: Vite
-- **Routing**: React Router v6
-- **Backend**: Supabase
-- **Styling**: CSS (no framework)
-
-### Environment Variables
-
-| Variable | Description |
-|----------|-------------|
-| `VITE_SUPABASE_URL` | Your Supabase project URL |
-| `VITE_SUPABASE_ANON_KEY` | Your Supabase anonymous key |
-
-## 🚧 Development
-
-### Available Scripts
-
-```bash
-npm run dev      # Start development server
-npm run build    # Build for production
-npm run preview  # Preview production build
-```
 
 ### Adding New Features
 
@@ -270,9 +138,9 @@ This project is for educational purposes.
 
 ## 👥 Contributors
 
-- Your Name - Initial work
+- Gayathiri Goopalakrishnan - Initial work
 
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - Supabase for backend infrastructure
 - React team for the framework
